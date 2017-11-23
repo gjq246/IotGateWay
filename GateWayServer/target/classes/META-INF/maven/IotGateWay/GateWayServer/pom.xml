@@ -13,7 +13,7 @@
         <configuration>  
             <archive>  
                 <manifest>  
-                    <mainClass>com.jiantsing.test.MyServer</mainClass>  
+                    <mainClass>cn.edu.fjjxu.iot.server.IotServer</mainClass>  
                 </manifest>  
             </archive>  
             <descriptorRefs>  
