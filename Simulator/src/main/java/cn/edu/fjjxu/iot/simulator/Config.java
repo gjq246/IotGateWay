@@ -1,4 +1,4 @@
-package cn.edu.fjjxu.iot.server;
+package cn.edu.fjjxu.iot.simulator;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -19,7 +19,7 @@ public class Config {
 			// 读取SRC下配置文件 --- 属于读取内部文件
 			// properties.load(Config.class.getResourceAsStream("/init.properties"));
 			// 读取系统外配置文件 (即Jar包外文件) --- 外部工程引用该Jar包时需要在工程下创建config目录存放配置文件
-			String filePath = System.getProperty("user.dir") + "/server.properties";
+			String filePath = System.getProperty("user.dir") + "/client.properties";
 			logger.info(System.getProperty("user.dir"));
 			InputStream in = new BufferedInputStream(new FileInputStream(filePath));
 			properties.load(in);

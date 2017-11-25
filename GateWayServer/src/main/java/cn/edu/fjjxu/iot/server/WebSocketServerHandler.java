@@ -20,13 +20,15 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.CharsetUtil;   
 import java.util.Calendar;  
 import java.util.GregorianCalendar;  
-import java.util.logging.Level;  
-import java.util.logging.Logger;   
+import org.apache.log4j.Logger;
+
+import cn.edu.fjjxu.iot.service.WebMessageService;  
  
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object>{   
          private static final Logger logger = Logger.getLogger(WebSocketServerHandshaker.class.getName());  
          private WebSocketServerHandshaker handshaker;  
           
+         private WebMessageService webMessageService;
           
          @Override  
          public void channelActive(ChannelHandlerContext ctx) throws Exception {  
@@ -61,15 +63,16 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object>{
                     
                    String request = ((TextWebSocketFrame)frame).text();  
                    System.out.println("服务器收到:" + request);  
-                   if (logger.isLoggable(Level.FINE)) {  
-                            logger.fine(String.format("%s received %s", ctx.channel(),request));  
-                   }  
+                   
+                   //接收实时和控制指令
+                   webMessageService=new WebMessageService();
+                   webMessageService.parseMessage(ctx, request);
                     
                     
-                   TextWebSocketFrame tws = new TextWebSocketFrame(getDateTime()  
-                                     + "(" +ctx.channel().remoteAddress() + ") ：" + request);  
+//                   TextWebSocketFrame tws = new TextWebSocketFrame(getDateTime()  
+//                                     + "(" +ctx.channel().remoteAddress() + ") ：" + request);  
                    // 群发  
-                   Global.group.writeAndFlush(tws);  
+//                   Global.group.writeAndFlush(tws);  
                    // 返回【谁发的发给谁】  
                    // ctx.channel().writeAndFlush(tws);  
          }   
