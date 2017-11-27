@@ -11,6 +11,7 @@ import cn.edu.fjjxu.iot.server.GateChannel;
 import cn.edu.fjjxu.iot.server.Global;
 import cn.edu.fjjxu.iot.server.message.Device;
 import cn.edu.fjjxu.iot.server.message.Gate;
+import cn.edu.fjjxu.iot.server.message.PacketMessage;
 import cn.edu.fjjxu.iot.server.message.Result;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -19,6 +20,8 @@ public class ChannelService {
 	private static final Logger logger = Logger.getLogger(ChannelService.class);
 	
 	private MessageService messageService;
+	
+	private WebMessageService webMessageService;
 	
 	public void addChannel(ChannelHandlerContext ctx,Gate gate){
 		messageService=new MessageService();
@@ -90,9 +93,9 @@ public class ChannelService {
      * @return
      */
     public GateChannel getDeviceChannel(String clientdeviceid){
-    	
+
     	for(GateChannel gc:Global.gateChannelDataList){
-    		
+   
     		if(gc.getGatedevicelist()!=null && gc.getGatedevicelist().size()>0){
     			
     			for(Device d:gc.getGatedevicelist()){
@@ -186,6 +189,38 @@ public class ChannelService {
     	
     	
     	return null;
+    	
+    }
+    
+    /**
+     * 发送从web接收的控制指令给终端
+     * @param ctx
+     * @param device
+     */
+    public void sendWebSocketCmd(ChannelHandlerContext ctx,Device device){
+    	
+    	GateChannel gateChannel=getDeviceChannel(device.getClientdeviceid());
+    	webMessageService=new WebMessageService();
+    	messageService = new MessageService();
+    	
+    	if(gateChannel!=null){
+    		
+    		PacketMessage pMessage=messageService.getCmdMessage(device);
+    		if(pMessage!=null){
+    			
+    			gateChannel.getGateChannel().writeAndFlush(pMessage);
+    			
+    			webMessageService.sendResult(ctx, 3, true, "ok");
+    			
+    		}else{
+    			webMessageService.sendResult(ctx, 3, false, "error");
+    		}  		
+    		
+    		
+    	}else{
+    		
+    		webMessageService.sendResult(ctx, 3, false, "error");
+    	}
     	
     }
 

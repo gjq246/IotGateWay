@@ -1,18 +1,11 @@
 package cn.edu.fjjxu.iot.service;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
 
 import cn.edu.fjjxu.iot.server.message.Device;
-import cn.edu.fjjxu.iot.server.message.Gate;
 import cn.edu.fjjxu.iot.server.message.Message;
-import cn.edu.fjjxu.iot.server.message.PacketHead;
-import cn.edu.fjjxu.iot.server.message.PacketMessage;
 import cn.edu.fjjxu.iot.server.message.Result;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -26,6 +19,8 @@ private static final Logger logger = Logger.getLogger(WebMessageService.class);
 		try {
 			
 			ChannelService channelService = new ChannelService();
+			
+			TextWebSocketFrame tws;
 
 			Message message = JSON.parseObject(msg, Message.class);
 
@@ -42,16 +37,19 @@ private static final Logger logger = Logger.getLogger(WebMessageService.class);
 				message2.setCode(2);				
 				message2.setData(JSON.toJSONString(deviceNew));
 				
-				TextWebSocketFrame tws = new TextWebSocketFrame(JSON.toJSONString(message2));  
+				tws = new TextWebSocketFrame(JSON.toJSONString(message2));  
 				
 				ctx.channel().writeAndFlush(tws);  
 
 				break;
-			//发送控制指令，{"code":3,"data":"{\"clientdeviceid\":\"02010001\",\"devicecode\":\"RBGLED\",\"data\":\"{\"power\":\"off\",\"color\":\"r\"}\"}"}
+			//发送控制指令，{"code":3,"data":"{\"clientdeviceid\":\"02010001\",\"devicecode\":\"RGBLED\",\"data\":\"{\\\"power\\\":\\\"off\\\",\\\"color\\\":\\\"r\\\"}\"}"}
 			case 3:
 				
-//				Result result=JSON.parseObject(message.getData(),Result.class);
-//				channelService.updateResult(ctx, result);
+				logger.info("收到指令："+message.getData());
+				
+                Device deviceCmd=JSON.parseObject(message.getData(),Device.class);
+				             
+                channelService.sendWebSocketCmd(ctx, deviceCmd);                
 
 				break;			
 
@@ -77,9 +75,11 @@ private static final Logger logger = Logger.getLogger(WebMessageService.class);
 			
 			String msgStr = JSON.toJSONString(message);
 			
-			PacketMessage packetMessage=new PacketMessage(new PacketHead(msgStr.getBytes("UTF-8").length,1),msgStr);
-			logger.info(packetMessage.toString());
-			ctx.writeAndFlush(packetMessage);
+			TextWebSocketFrame tws = new TextWebSocketFrame(JSON.toJSONString(msgStr));
+			
+			logger.info(msgStr);
+			ctx.writeAndFlush(tws);
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 			logger.error("sendResult异常：" + e.getMessage());

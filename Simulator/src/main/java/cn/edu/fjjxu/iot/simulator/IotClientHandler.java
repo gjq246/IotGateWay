@@ -2,6 +2,8 @@ package cn.edu.fjjxu.iot.simulator;
 
 import org.apache.log4j.*;
 
+import com.alibaba.fastjson.JSON;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -10,17 +12,14 @@ import io.netty.util.ReferenceCountUtil;
 
 public class IotClientHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger logger = Logger
-            .getLogger(IotClientHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(IotClientHandler.class.getName());
     
     private ChannelHandlerContext ctx;
-
-//    private final ByteBuf firstMessage;
+    
+    public RGBLED rgbled=new RGBLED();
 
     public IotClientHandler() {
-//        byte[] req = "QUERY TIME ORDER".getBytes();
-//        firstMessage = Unpooled.buffer(req.length);
-//        firstMessage.writeBytes(req);
+
     }
 
     @Override
@@ -28,7 +27,7 @@ public class IotClientHandler extends ChannelInboundHandlerAdapter {
         //与服务端建立连接后
     	logger.info("client channelActive..");
         this.ctx = ctx;
-        String firstMessage="QUERY TIME ORDER";
+        String firstMessage="请求连接。。。";
         ctx.writeAndFlush(new PacketMessage(new PacketHead(firstMessage.getBytes("UTF-8").length,1),firstMessage));
     }
     
@@ -36,11 +35,6 @@ public class IotClientHandler extends ChannelInboundHandlerAdapter {
     {
     	boolean result;
     	try{
-//    		ByteBuf msgByte;
-//    		byte[] req = msg.getBytes();
-//    		msgByte = Unpooled.buffer(req.length);
-//    		msgByte.writeBytes(req);
-//    		ctx.writeAndFlush(msgByte);
     		PacketMessage packetMessage=new PacketMessage(new PacketHead(msg.getBytes("UTF-8").length,1),msg);
     		logger.info(packetMessage.toString());
     		ctx.writeAndFlush(packetMessage);
@@ -56,22 +50,35 @@ public class IotClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
-//        System.out.println("client channelRead..");
-//        //服务端返回消息后
-//        ByteBuf buf = (ByteBuf) msg;
-//        byte[] req = new byte[buf.readableBytes()];
-//        buf.readBytes(req);
-//        String body = new String(req, "UTF-8");
-//        System.out.println("Now is :" + body);
     	
     	PacketMessage packetMessage = (PacketMessage) msg;
         try {
-            // Do something with msg
-        	logger.info("client get :" + packetMessage.getContent());
+        	logger.info("收到数据:" + packetMessage.getContent());
+        	
+			Message message = JSON.parseObject(packetMessage.getContent(), Message.class);
+
+			switch (message.getCode()) {
+			case 3:
+				//收到控制指令做出响应
+				Device device=JSON.parseObject(message.getData(),Device.class);
+				if(device.getDevicecode().equals("RGBLED")){
+					//温湿度
+					//DHT11 dht11=JSON.parseObject(device.getData(),DHT11.class);
+					logger.info("控制RGBLED的状态为:"+device.getData());
+					rgbled=JSON.parseObject(device.getData(),RGBLED.class);
+					
+				}else{
+					logger.info("无法处理这种设备："+device.getDevicecode());
+				}
+				break;
+			default:
+				break;
+			}
  
-        } finally {
-            //ByteBuf是一个引用计数对象，这个对象必须显示地调用release()方法来释放
-            //or ((ByteBuf)msg).release();
+        }catch (Exception e) {
+			// TODO: handle exception
+        	logger.error("channelRead exception:"+e.getMessage());
+		} finally {
             ReferenceCountUtil.release(msg);
         }
         
@@ -85,6 +92,11 @@ public class IotClientHandler extends ChannelInboundHandlerAdapter {
         logger.error("Unexpected exception from downstream:"
                 + cause.getMessage());
         ctx.close();
+        
+//        2017-11-27 00:24:27 [ERROR]-[cn.edu.fjjxu.iot.simulator.IotClientHandler] client exceptionCaught..
+//        2017-11-27 00:24:27 [ERROR]-[cn.edu.fjjxu.iot.simulator.IotClientHandler] Unexpected exception from downstream:java.lang.IndexOutOfBoundsException: readerIndex(8) + length(144) exceeds writerIndex(80): PooledUnsafeDirectByteBuf(ridx: 8, widx: 80, cap: 80)
+//        2017-11-27 00:24:27 [ERROR]-[cn.edu.fjjxu.iot.simulator.IotClientHandler] client exceptionCaught..
+        
     }
 
 }

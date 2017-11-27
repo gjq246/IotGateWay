@@ -2,6 +2,7 @@ package cn.edu.fjjxu.iot.simulator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.*;
@@ -45,18 +46,26 @@ public class IotClient {
 			
 			Message message;
 			Gate gate;
+			message=new Message();
+			message.setCode(1);
+			gate=new Gate();
+			gate.setGateid("1");
+			message.setData(JSON.toJSONString(gate));
+			//登记网关
+			clientHandler.sendMessage(JSON.toJSONString(message));
 
-			for (int i = 0; i < 1; i++) {
-				
-				message=new Message();
-				message.setCode(1);
-				gate=new Gate();
-				gate.setGateid("1");
-				message.setData(JSON.toJSONString(gate));
-				
-				clientHandler.sendMessage(JSON.toJSONString(message));
+			TimeUnit.SECONDS.sleep(4);
+			
+			int max=20;
+	        int min=10;
+	        Random random = new Random();
+	        
+//	        String[] led={"r","g","b"};
+	        clientHandler.rgbled.setPower("on");
+	        clientHandler.rgbled.setColor("g");
 
-				TimeUnit.SECONDS.sleep(4);
+	        
+			while (true) {
 
 				message=new Message();
 				message.setCode(2);
@@ -65,20 +74,23 @@ public class IotClient {
 				
 				Device d1=new Device();
 				DHT11 dht11=new DHT11();
-				dht11.setTemp("30");
-				dht11.setHumi("65");
+				int t = random.nextInt(max)%(max-min+1) + min;
+				dht11.setTemp(String.valueOf(t));
+				int h = random.nextInt(max)%(max-min+1) + min;
+				dht11.setHumi(String.valueOf(h));
 				
 				d1.setClientdeviceid("01010001");
 				d1.setDevicecode("DHT11");
 				d1.setData(JSON.toJSONString(dht11));
 				
 				Device d2=new Device();
-				RGBLED rgbled=new RGBLED();
-				rgbled.setPower("on");
-				rgbled.setColor("r");
+//				RGBLED rgbled=new RGBLED();
+//				rgbled.setPower("on");
+//				int i=random.nextInt(2)%(2-0+1) + 0;
+//				rgbled.setColor("b");
 				d2.setClientdeviceid("02010001");
 				d2.setDevicecode("RGBLED");
-				d2.setData(JSON.toJSONString(rgbled));
+				d2.setData(JSON.toJSONString(clientHandler.rgbled));
 				
 				devicelist.add(d1);
 				devicelist.add(d2);				
@@ -87,15 +99,13 @@ public class IotClient {
 				
 				clientHandler.sendMessage(JSON.toJSONString(message));
 
-				TimeUnit.SECONDS.sleep(4);
-
-				// Thread.sleep(1000);
-
-				clientHandler.sendMessage("发送数据测试3");
+				//每隔5秒上报一次
+				TimeUnit.SECONDS.sleep(5);
+				
 			}
 
 			// 等待客户端链路关闭
-			f.channel().closeFuture().sync();
+			//f.channel().closeFuture().sync();
 		} finally {
 			// 优雅退出，释放NIO线程组
 			group.shutdownGracefully();

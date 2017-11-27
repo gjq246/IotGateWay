@@ -46,7 +46,7 @@ public class MessageService {
 				channelService.updateDevices(ctx, devicelist);
 
 				break;
-			//发送控制指令，websocket部分,{"code":3,"data":"{\"clientdeviceid\":\"02010001\",\"devicecode\":\"RBGLED\",\"data\":\"{\"power\":\"off\",\"color\":\"r\"}\"}"}
+			//发送控制指令，websocket部分,{"code":3,"data":"{\"clientdeviceid\":\"02010001\",\"devicecode\":\"RBGLED\",\"data\":\"{\\\"power\\\":\\\"off\\\",\\\"color\\\":\\\"r\\\"}\"}"}
 			//这里是接收指令结果
 			case 3:
 				
@@ -84,6 +84,34 @@ public class MessageService {
 			// TODO: handle exception
 			logger.error("sendResult异常：" + e.getMessage());
 		}
+		
+	}
+	/***
+	 * 构造控制指令
+	 * @param device
+	 * @return
+	 */
+	public PacketMessage getCmdMessage(Device device){
+		
+		try{
+			
+			Message message=new Message();
+			message.setCode(3);
+			message.setData(JSON.toJSONString(device));
+			
+			String msgStr = JSON.toJSONString(message);
+			
+			PacketMessage packetMessage=new PacketMessage(new PacketHead(msgStr.getBytes("UTF-8").length,1),msgStr);
+			
+			return packetMessage;
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+			logger.error("getCmdMessage异常：" + e.getMessage());
+		}
+		
+		return null;
+		
 		
 	}
 
