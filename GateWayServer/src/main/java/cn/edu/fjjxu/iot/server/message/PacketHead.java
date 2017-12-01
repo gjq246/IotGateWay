@@ -6,12 +6,12 @@ public class PacketHead {
     private int length;
  
     //数据版本
-    private int version;
+    private int head;
  
  
-    public PacketHead(int length, int version) {
+    public PacketHead(int length, int head) {
         this.length = length;
-        this.version = version;
+        this.head = head;
     }
  
     public int getLength() {
@@ -21,13 +21,14 @@ public class PacketHead {
     public void setLength(int length) {
         this.length = length;
     }
- 
-    public int getVersion() {
-        return version;
-    }
- 
-    public void setVersion(int version) {
-        this.version = version;
-    }
 
+	public int getHead() {
+		return head;
+	}
+
+	public void setHead(int head) {
+		this.head = head;
+	}
+ 
+    
 }

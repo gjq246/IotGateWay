@@ -49,7 +49,7 @@ public class IotClient {
 			message=new Message();
 			message.setCode(1);
 			gate=new Gate();
-			gate.setGateid("1");
+			gate.setGateid(Config.getObject("gateid"));
 			message.setData(JSON.toJSONString(gate));
 			//登记网关
 			clientHandler.sendMessage(JSON.toJSONString(message));
@@ -64,7 +64,9 @@ public class IotClient {
 	        clientHandler.rgbled.setPower("on");
 	        clientHandler.rgbled.setColor("g");
 
-	        
+	        String dht11id=Config.getObject("dht11.deviceid");
+	        String rgbledid=Config.getObject("rgbled.deviceid");
+	        		
 			while (true) {
 
 				message=new Message();
@@ -79,7 +81,7 @@ public class IotClient {
 				int h = random.nextInt(max)%(max-min+1) + min;
 				dht11.setHumi(String.valueOf(h));
 				
-				d1.setClientdeviceid("01010001");
+				d1.setClientdeviceid(dht11id);
 				d1.setDevicecode("DHT11");
 				d1.setData(JSON.toJSONString(dht11));
 				
@@ -88,7 +90,7 @@ public class IotClient {
 //				rgbled.setPower("on");
 //				int i=random.nextInt(2)%(2-0+1) + 0;
 //				rgbled.setColor("b");
-				d2.setClientdeviceid("02010001");
+				d2.setClientdeviceid(rgbledid);
 				d2.setDevicecode("RGBLED");
 				d2.setData(JSON.toJSONString(clientHandler.rgbled));
 				

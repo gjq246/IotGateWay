@@ -34,6 +34,6 @@ public class PacketMessage {
  
     @Override
     public String toString() {
-        return String.format("[length=%d,version=%d,content=%s]",head.getLength(),head.getVersion(),content);
+        return String.format("[head=%d,length=%d,content=%s]",head.getHead(),head.getLength(),content);
     }
 }

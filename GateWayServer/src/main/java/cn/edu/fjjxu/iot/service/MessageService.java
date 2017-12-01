@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import cn.edu.fjjxu.iot.server.message.Device;
 import cn.edu.fjjxu.iot.server.message.Gate;
 import cn.edu.fjjxu.iot.server.message.Message;
+import cn.edu.fjjxu.iot.server.message.PacketConstant;
 import cn.edu.fjjxu.iot.server.message.PacketHead;
 import cn.edu.fjjxu.iot.server.message.PacketMessage;
 import cn.edu.fjjxu.iot.server.message.Result;
@@ -77,7 +78,7 @@ public class MessageService {
 			
 			String msgStr = JSON.toJSONString(message);
 			
-			PacketMessage packetMessage=new PacketMessage(new PacketHead(msgStr.getBytes("UTF-8").length,1),msgStr);
+			PacketMessage packetMessage=new PacketMessage(new PacketHead(msgStr.getBytes("UTF-8").length,PacketConstant.HEAD_DATA),msgStr);
 			logger.info(packetMessage.toString());
 			ctx.writeAndFlush(packetMessage);
 		} catch (Exception e) {
@@ -101,7 +102,7 @@ public class MessageService {
 			
 			String msgStr = JSON.toJSONString(message);
 			
-			PacketMessage packetMessage=new PacketMessage(new PacketHead(msgStr.getBytes("UTF-8").length,1),msgStr);
+			PacketMessage packetMessage=new PacketMessage(new PacketHead(msgStr.getBytes("UTF-8").length,PacketConstant.HEAD_DATA),msgStr);
 			
 			return packetMessage;
 			

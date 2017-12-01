@@ -4,8 +4,6 @@ import org.apache.log4j.*;
 
 import com.alibaba.fastjson.JSON;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
@@ -28,14 +26,14 @@ public class IotClientHandler extends ChannelInboundHandlerAdapter {
     	logger.info("client channelActive..");
         this.ctx = ctx;
         String firstMessage="请求连接。。。";
-        ctx.writeAndFlush(new PacketMessage(new PacketHead(firstMessage.getBytes("UTF-8").length,1),firstMessage));
+        ctx.writeAndFlush(new PacketMessage(new PacketHead(firstMessage.getBytes("UTF-8").length,PacketConstant.HEAD_DATA),firstMessage));
     }
     
     public boolean sendMessage(String msg)
     {
     	boolean result;
     	try{
-    		PacketMessage packetMessage=new PacketMessage(new PacketHead(msg.getBytes("UTF-8").length,1),msg);
+    		PacketMessage packetMessage=new PacketMessage(new PacketHead(msg.getBytes("UTF-8").length,PacketConstant.HEAD_DATA),msg);
     		logger.info("回传数据："+packetMessage.toString());
     		ctx.writeAndFlush(packetMessage);
     		result=true;

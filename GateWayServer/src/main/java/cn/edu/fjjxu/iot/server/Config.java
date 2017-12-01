@@ -20,7 +20,7 @@ public class Config {
 			// properties.load(Config.class.getResourceAsStream("/init.properties"));
 			// 读取系统外配置文件 (即Jar包外文件) --- 外部工程引用该Jar包时需要在工程下创建config目录存放配置文件
 			String filePath = System.getProperty("user.dir") + "/server.properties";
-			logger.info(System.getProperty("user.dir"));
+			//logger.info(System.getProperty("user.dir"));
 			InputStream in = new BufferedInputStream(new FileInputStream(filePath));
 			properties.load(in);
 		} catch (IOException e) {
