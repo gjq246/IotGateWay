@@ -17,7 +17,7 @@ package cn.edu.fjjxu.iot.server.message;
  * 
  * 2.发送实时数据(指令码2)
  * 客户端发送{"code":2,"data":"JSON字符串"},
- * 例如：{"code":2,"data":"[{\"clientdeviceid\":\"01010001\",\"devicecode\":\"DHT11\",\"data\":\"{\"temp\":\"40\",\"humi\":\"75\"}\"},{\"clientdeviceid\":\"02010001\",\"devicecode\":\"RBGLED\",\"data\":\"{\"power\":\"on\",\"color\":\"r\"}\"}]"}
+ * 例如：{"code":2,"data":"[{\"clientdeviceid\":\"01010001\",\"devicecode\":\"DHT11\",\"data\":\"{\"temp\":\"40\",\"humi\":\"75\"}\"},{\"clientdeviceid\":\"02010001\",\"devicecode\":\"RGBLED\",\"data\":\"{\"power\":\"on\",\"color\":\"r\"}\"}]"}
  *  
  * 服务端回应{"code":2,"data":"JSON字符串"}
  * 例如：{"code":2,"data":"{\"success\":true,\"msg\":\"ok\"}"}
@@ -25,7 +25,7 @@ package cn.edu.fjjxu.iot.server.message;
  * 
  * 3.发送控制指令(指令码3)
  * 服务端发送{"code":3,"data":"JSON字符串"}
- * 例如：{"code":3,"data":"{\"clientdeviceid\":\"02010001\",\"devicecode\":\"RBGLED\",\"data\":\"{\"power\":\"off\",\"color\":\"r\"}\"}"}
+ * 例如：{"code":3,"data":"{\"clientdeviceid\":\"02010001\",\"devicecode\":\"RGBLED\",\"data\":\"{\"power\":\"off\",\"color\":\"r\"}\"}"}
  * 
  * 客户端回应
  * {"code":3,"data":"JSON字符串"}
@@ -38,11 +38,11 @@ package cn.edu.fjjxu.iot.server.message;
  *      
  * 1.取实时数据(指令码2)
  * js发送{"code":2,"data":"JSON字符串"}
- * 例如{"code":2,"data":"{\"clientdeviceid\":\"02010001\",\"devicecode\":\"RBGLED\",\"data\":\"\"}"}
+ * 例如{"code":2,"data":"{\"clientdeviceid\":\"02010001\",\"devicecode\":\"RGBLED\",\"data\":\"\"}"}
  * {"code":2,"data":"{\"clientdeviceid\":\"01010001\",\"devicecode\":\"DHT11\",\"data\":\"\"}"}
  * 
  * 服务器回应{"code":2,"data":"JSON字符串"}
- * 例如：{"code":2,"data":"{\"clientdeviceid\":\"02010001\",\"devicecode\":\"RBGLED\",\"data\":\"{\"power\":\"on\",\"color\":\"r\"}\"}"}
+ * 例如：{"code":2,"data":"{\"clientdeviceid\":\"02010001\",\"devicecode\":\"RGBLED\",\"data\":\"{\"power\":\"on\",\"color\":\"r\"}\"}"}
  * 
  * 2.发送控制指令(指令码3)
  * js发送{"code":3,"data":"JSON字符串"}

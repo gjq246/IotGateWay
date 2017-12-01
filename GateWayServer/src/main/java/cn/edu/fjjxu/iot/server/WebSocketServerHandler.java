@@ -33,12 +33,12 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object>{
          @Override  
          public void channelActive(ChannelHandlerContext ctx) throws Exception {  
                    Global.group.add(ctx.channel());  
-                   System.out.println("客户端与服务器段开启");  
+                   logger.info("客户端与服务器段开启");  
          }   
          @Override  
          public void channelInactive(ChannelHandlerContext ctx) throws Exception {  
                    Global.group.remove(ctx.channel());  
-                   System.out.println("客户端与服务器链接关闭！");  
+                   logger.info("客户端与服务器链接关闭！");  
          }   
            
          @Override  
@@ -56,13 +56,13 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object>{
                    }  
                     
                    if(!(frame instanceof TextWebSocketFrame)){  
-                            System.err.println("本例仅支持文本！");  
+                	   logger.info("本例仅支持文本！");  
                             throw new UnsupportedOperationException(String.format(  
                                                "%s frame types not supported", frame.getClass().getName()));  
                    }  
                     
                    String request = ((TextWebSocketFrame)frame).text();  
-                   System.out.println("服务器收到:" + request);  
+                   logger.info("服务器收到:" + request);  
                    
                    //接收实时和控制指令
                    webMessageService=new WebMessageService();

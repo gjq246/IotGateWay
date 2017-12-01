@@ -36,7 +36,7 @@ public class IotClientHandler extends ChannelInboundHandlerAdapter {
     	boolean result;
     	try{
     		PacketMessage packetMessage=new PacketMessage(new PacketHead(msg.getBytes("UTF-8").length,1),msg);
-    		logger.info(packetMessage.toString());
+    		logger.info("回传数据："+packetMessage.toString());
     		ctx.writeAndFlush(packetMessage);
     		result=true;
     	}catch (Exception e) {

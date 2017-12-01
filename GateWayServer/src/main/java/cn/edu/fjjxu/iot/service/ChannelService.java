@@ -208,6 +208,8 @@ public class ChannelService {
     		PacketMessage pMessage=messageService.getCmdMessage(device);
     		if(pMessage!=null){
     			
+    			logger.info("sendClientCmd:"+pMessage.toString());
+    			
     			gateChannel.getGateChannel().writeAndFlush(pMessage);
     			
     			webMessageService.sendResult(ctx, 3, true, "ok");
